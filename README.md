@@ -6,9 +6,10 @@ This template provides a minimal setup to zustand
 
 ## CODE SAMPLE
 
-- Configure the top-level `parserOptions` property like this:
-
 ```js
+import { create } from "zustand";
+import { useShallow } from "zustand/shallow";
+
 const useStore = create((set) => ({
   count: 0, //Initial state
   inc: () => set((state) => ({ count: state.count + 1 })), //Action that set the
@@ -43,3 +44,5 @@ function Count() {
   return <h1>{count}</h1>;
 }
 ```
+
+[Watch the demo video](https://youtu.be/AYO4qHAnLQI?si=dusfEEK8vSyjqPl1)
