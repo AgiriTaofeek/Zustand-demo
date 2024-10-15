@@ -1,50 +1,45 @@
-# React + TypeScript + Vite
+# React + TypeScript + Vite + Zustand Cart demo project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project was to practice zustand which is a client side state management solution alternative to redux. It has a very simple API but for redux users, you can opt in to the patterns you are already used to i.e the slice pattern
 
-Currently, two official plugins are available:
+This template provides a minimal setup to zustand
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## CODE SAMPLE
 
 - Configure the top-level `parserOptions` property like this:
 
 ```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+const useStore = create((set) => ({
+  count: 0, //Initial state
+  inc: () => set((state) => ({ count: state.count + 1 })), //Action that set the
+  dec: () => set((state) => ({ count: state.count - 1 })),
+}));
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+function App() {
+  //Ist approach to access the state/action but would cause so many re-rendering if we have many states
+  const store = useStore();
+  //2nd approach more performant
+  const count = useStore((state) => state.count);
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+  //3rd approach the best usually when you want to get multiple state
+  const { count, inc, dec } = useStore(
+    useShallow((state) => ({
+      count: state.count,
+      inc: state.inc,
+      dec: state.dec,
+    }))
+  );
+  return (
+    <>
+      <Button onClick={inc}>+</Button>
+      <Count />
+      <Button onClick={dec}>-</Button>
+    </>
+  );
+}
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+function Count() {
+  const count = useStore((state) => state.count);
+  return <h1>{count}</h1>;
+}
 ```
